@@ -172,6 +172,17 @@ h2 {
     padding-right: 44px;
 }
 
+.password-field input::-ms-reveal,
+.password-field input::-ms-clear {
+    display: none;
+}
+
+.password-field input::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    display: none;
+    pointer-events: none;
+}
+
 .password-toggle {
     position: absolute;
     top: 50%;

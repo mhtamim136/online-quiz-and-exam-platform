@@ -41,7 +41,17 @@ a:hover {
     gap: 16px;
 }
 
-.student-topbar-user a {
+.student-user-link {
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.student-user-link:hover {
+    color: #d8edf1;
+    text-decoration: none;
+}
+
+.student-logout-link {
     color: #ffffff;
     border: 1px solid #9fb4c7;
     padding: 7px 12px;
@@ -58,9 +68,21 @@ a:hover {
     background: #ffffff;
     border-right: 1px solid #d9e0e7;
     padding: 18px 12px;
+    display: flex;
 }
 
-.student-sidebar a {
+.student-sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.student-nav {
+    flex: 1;
+}
+
+.student-sidebar a,
+.student-sidebar-profile {
     display: block;
     padding: 10px 12px;
     border-radius: 6px;
@@ -69,10 +91,20 @@ a:hover {
 }
 
 .student-sidebar a.active,
-.student-sidebar a:hover {
+.student-sidebar a:hover,
+.student-sidebar-profile.active,
+.student-sidebar-profile:hover {
     background: #e8f3f5;
     color: #0b5965;
     text-decoration: none;
+}
+
+.student-sidebar-profile {
+    margin-top: auto;
+    margin-bottom: 0;
+    border: 1px solid #c6d4df;
+    text-align: center;
+    font-weight: bold;
 }
 
 .student-main {

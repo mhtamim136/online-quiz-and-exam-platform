@@ -14,8 +14,8 @@
         <span>Student Role</span>
     </div>
     <div class="student-topbar-user">
-        <span><?php echo studentE($_SESSION['student_name'] ?? 'Student'); ?></span>
-        <a href="logout.php">Logout</a>
+        <a class="student-user-link" href="student.php?action=profile"><?php echo studentE($_SESSION['name'] ?? ($_SESSION['student_name'] ?? 'Student')); ?></a>
+        <a class="student-logout-link" href="logout.php">Logout</a>
     </div>
 </header>
 <div class="student-layout">

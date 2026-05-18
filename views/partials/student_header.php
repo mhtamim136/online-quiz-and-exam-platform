@@ -15,7 +15,7 @@
     </div>
     <div class="student-topbar-user">
         <span><?php echo studentE($_SESSION['student_name'] ?? 'Student'); ?></span>
-        <a href="student_logout.php">Logout</a>
+        <a href="logout.php">Logout</a>
     </div>
 </header>
 <div class="student-layout">

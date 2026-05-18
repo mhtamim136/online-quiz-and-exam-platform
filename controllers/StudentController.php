@@ -41,6 +41,7 @@ function studentDashboardAction()
 function studentProfileAction()
 {
     $studentId = studentCurrentId();
+    $student = studentFindById($studentId);
     $errors = [];
 
     if (studentIsPost()) {
@@ -124,16 +125,17 @@ function studentProfileAction()
                 } elseif ($file['size'] > 2 * 1024 * 1024) {
                     $errors[] = 'Profile picture must be 2 MB or smaller.';
                 } else {
+                    $profileStudentId = !empty($student['id']) ? (int)$student['id'] : $studentId;
                     $uploadDir = __DIR__ . '/../uploads/profile_pics/';
                     if (!is_dir($uploadDir)) {
                         mkdir($uploadDir, 0777, true);
                     }
 
-                    $fileName = 'student_' . $studentId . '_' . time() . '.' . $extension;
+                    $fileName = 'student_' . $profileStudentId . '_' . time() . '.' . $extension;
                     $targetPath = $uploadDir . $fileName;
                     $dbPath = 'uploads/profile_pics/' . $fileName;
 
-                    if (move_uploaded_file($file['tmp_name'], $targetPath) && studentUpdateProfilePicture($studentId, $dbPath)) {
+                    if (move_uploaded_file($file['tmp_name'], $targetPath) && studentUpdateProfilePicture($profileStudentId, $dbPath)) {
                         studentSetFlash('success', 'Profile picture updated successfully.');
                         studentRedirect('student.php?action=profile');
                     }

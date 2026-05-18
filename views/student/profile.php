@@ -1,3 +1,6 @@
+<?php
+$student = $student ?? [];
+?>
 <h1>My Profile</h1>
 
 <?php if (!empty($errors)): ?>
@@ -19,22 +22,22 @@
             <div class="student-profile-pic"></div>
         <?php endif; ?>
 
-        <p><strong>Email:</strong> <?php echo studentE($student['email']); ?></p>
-        <p><strong>Student ID:</strong> <?php echo studentE($student['student_id']); ?></p>
-        <p><strong>Joined:</strong> <?php echo studentE($student['created_at']); ?></p>
+        <p><strong>Email:</strong> <?php echo studentE($student['email'] ?? ''); ?></p>
+        <p><strong>Student ID:</strong> <?php echo studentE($student['student_id'] ?? ''); ?></p>
+        <p><strong>Joined:</strong> <?php echo studentE($student['created_at'] ?? ''); ?></p>
 
         <div id="studentProfileErrors" class="student-js-errors"></div>
         <form id="studentProfileForm" method="post" action="student.php?action=profile" novalidate>
             <input type="hidden" name="profile_action" value="update_profile">
 
             <label for="profile_name">Name</label>
-            <input id="profile_name" name="name" type="text" value="<?php echo studentE($student['name']); ?>">
+            <input id="profile_name" name="name" type="text" value="<?php echo studentE($student['name'] ?? ''); ?>">
 
             <label for="profile_phone">Phone</label>
-            <input id="profile_phone" name="phone" type="text" value="<?php echo studentE($student['phone']); ?>">
+            <input id="profile_phone" name="phone" type="text" value="<?php echo studentE($student['phone'] ?? ''); ?>">
 
             <label for="profile_program">Program</label>
-            <input id="profile_program" name="program" type="text" value="<?php echo studentE($student['program']); ?>">
+            <input id="profile_program" name="program" type="text" value="<?php echo studentE($student['program'] ?? ''); ?>">
 
             <button type="submit" class="student-btn primary">Update Profile</button>
         </form>

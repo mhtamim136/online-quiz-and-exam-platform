@@ -40,9 +40,9 @@ function studentGetFlash()
 
 function studentRequireLogin()
 {
-    if (!isset($_SESSION['student_user_id'])) {
+    if (!isset($_SESSION['user_id'])) {
         studentSetFlash('error', 'Please log in to access the student area.');
-        studentRedirect('student_login.php');
+        studentRedirect('login.php');
     }
 
     studentRequireRole('student');
@@ -50,15 +50,19 @@ function studentRequireLogin()
 
 function studentRequireRole($role)
 {
-    if (!isset($_SESSION['student_role']) || $_SESSION['student_role'] !== $role) {
+    if (!isset($_SESSION['role']) || $_SESSION['role'] !== $role){
         studentSetFlash('error', 'Access denied. This page is only for students.');
-        studentRedirect('student_login.php');
+        studentRedirect('login.php');
     }
 }
 
 function studentCurrentId()
 {
-    return isset($_SESSION['student_user_id']) ? (int)$_SESSION['student_user_id'] : 0;
+    if (isset($_SESSION['student_user_id'])) {
+        return (int)$_SESSION['student_user_id'];
+    }
+
+    return isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0;
 }
 
 function studentBindParams($stmt, $types, $params)

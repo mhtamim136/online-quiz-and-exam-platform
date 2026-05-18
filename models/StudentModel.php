@@ -36,7 +36,12 @@ function studentFindById($studentId)
 {
     global $studentConn;
 
-    $sql = "SELECT id, name, email, password_hash, phone, role, profile_pic, student_id, program, is_active, created_at
+    $studentId = (int)$studentId;
+    if ($studentId <= 0 && isset($_SESSION['user_id'])) {
+        $studentId = (int)$_SESSION['user_id'];
+    }
+
+    $sql = "SELECT *
             FROM users
             WHERE id = ? AND role = 'student'
             LIMIT 1";

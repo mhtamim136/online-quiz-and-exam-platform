@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Online Quiz &amp; Exam Platform</title>
-    <link rel="stylesheet" href="views/assets/css/style.css">
+    <link rel="stylesheet" href="views/assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/../assets/css/style.css'); ?>">
 </head>
 <body class="login-page">
-    <div class="login-panel">
-        <h1>Login</h1>
-        <p>Use the same login page for Admin, Student, Instructor, and TA accounts.</p>
+    <div class="login-panel auth-panel-compact">
+        <div class="auth-heading">
+            <h1>Welcome Back</h1>
+            <p class="auth-muted">Login to continue to your dashboard.</p>
+        </div>
 
         <div id="formError" class="form-error"></div>
+
+        <?php $flash = getFlashMessage(); ?>
+        <?php if ($flash): ?>
+            <div class="message <?php echo e($flash['type']); ?>">
+                <?php echo e($flash['message']); ?>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($errors)): ?>
             <div class="form-error server-errors">
@@ -29,15 +38,26 @@
 
             <div class="form-row">
                 <label for="password">Password</label>
-                <input id="password" name="password" type="password">
+                <div class="password-field">
+                    <input id="password" name="password" type="password">
+                    <button class="password-toggle" type="button" data-target="password" aria-label="Show password" title="Show password">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"></circle>
+                        </svg>
+                    </button>
+                </div>
             </div>
 
-            <button class="primary">Login</button>
+            <button class="primary full-button">Login</button>
         </form>
 
-        <p class="muted">Admin sample: admin@example.com / 136</p>
+        <div class="auth-links">
+            <span>New to the platform?</span>
+            <a href="register.php">Register</a>
+        </div>
     </div>
 
-    <script src="views/assets/js/admin.js"></script>
+    <script src="views/assets/js/admin.js?v=<?php echo filemtime(__DIR__ . '/../assets/js/admin.js'); ?>"></script>
 </body>
 </html>

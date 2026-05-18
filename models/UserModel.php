@@ -25,6 +25,13 @@ function userUsernameExists($conn, $username, $exclude_id = 0)
     return $row !== null;
 }
 
+function userStudentIdExists($conn, $student_id, $exclude_id = 0)
+{
+    $sql = "SELECT id FROM users WHERE student_id = ? AND id <> ? LIMIT 1";
+    $row = dbSelectOne($conn, $sql, 'si', array($student_id, (int)$exclude_id));
+    return $row !== null;
+}
+
 function userGetAll($conn, $keyword, $role, $active)
 {
     $sql = "SELECT id, username, name, email, phone, role, student_id, program, department,
@@ -157,6 +164,33 @@ function userCreateTa($conn, $data)
     );
 }
 
+function userCreateRegisteredUser($conn, $data)
+{
+    $sql = "INSERT INTO users
+            (username, name, email, password_hash, phone, role, student_id, program, department, bio, approval_status, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    return dbExecute(
+        $conn,
+        $sql,
+        'sssssssssssi',
+        array(
+            $data['username'],
+            $data['name'],
+            $data['email'],
+            $data['password_hash'],
+            $data['phone'],
+            $data['role'],
+            $data['student_id'],
+            $data['program'],
+            $data['department'],
+            $data['bio'],
+            $data['approval_status'],
+            (int)$data['is_active']
+        )
+    );
+}
+
 function userGetStudentsByKeyword($conn, $keyword)
 {
     $like = '%' . $keyword . '%';
@@ -167,4 +201,14 @@ function userGetStudentsByKeyword($conn, $keyword)
             ORDER BY name ASC
             LIMIT 20";
     return dbSelectAll($conn, $sql, 'sss', array($like, $like, $like));
+}
+
+function userGetRecentStudents($conn, $limit)
+{
+    $sql = "SELECT id, name, email, student_id, program, phone, is_active
+            FROM users
+            WHERE role = 'student'
+            ORDER BY created_at DESC, id DESC
+            LIMIT ?";
+    return dbSelectAll($conn, $sql, 'i', array((int)$limit));
 }

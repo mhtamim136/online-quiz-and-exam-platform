@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/config/helpers.php';
-
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 $_SESSION = array();
 
 if (ini_get('session.use_cookies')) {
@@ -10,3 +12,4 @@ if (ini_get('session.use_cookies')) {
 
 session_destroy();
 redirect('login.php');
+exit;

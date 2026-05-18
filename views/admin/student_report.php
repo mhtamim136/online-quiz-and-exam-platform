@@ -15,6 +15,43 @@
     </form>
 </div>
 
+<?php if ($keyword === '' && !$student): ?>
+    <div class="panel">
+        <h2>Recent Students</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Student ID</th>
+                        <th>Program</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (empty($recentStudents)): ?>
+                        <tr><td colspan="6">No students found.</td></tr>
+                    <?php endif; ?>
+                    <?php foreach ($recentStudents as $item): ?>
+                        <tr>
+                            <td><?php echo e($item['name']); ?></td>
+                            <td><?php echo e($item['email']); ?></td>
+                            <td><?php echo e($item['student_id']); ?></td>
+                            <td><?php echo e($item['program']); ?></td>
+                            <td><?php echo (int)$item['is_active'] === 1 ? 'Active' : 'Inactive'; ?></td>
+                            <td>
+                                <a class="btn small" href="admin.php?action=student_report&student_id=<?php echo e($item['id']); ?>">View Report</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php endif; ?>
+
 <?php if (!empty($students)): ?>
     <div class="panel">
         <h2>Search Results</h2>
@@ -42,6 +79,12 @@
                 <?php endforeach; ?>
             </tbody>
         </table>
+    </div>
+<?php endif; ?>
+
+<?php if ($keyword !== '' && empty($students) && !$student): ?>
+    <div class="panel">
+        <p class="muted">No students matched your search.</p>
     </div>
 <?php endif; ?>
 

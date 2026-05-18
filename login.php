@@ -5,6 +5,6 @@ require_once __DIR__ . '/controllers/AuthController.php';
 
 if (isPost()) {
     authHandleLogin($conn);
+} else {
+    authShowLogin();
 }
-
-authShowLogin();

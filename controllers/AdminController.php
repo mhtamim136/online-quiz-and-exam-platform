@@ -119,13 +119,18 @@ function adminUserView($conn)
     $pageTitle = 'User Details';
     $user_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     $user = userFindById($conn, $user_id);
+    $academicSummary = null;
 
     if (!$user) {
         setFlashMessage('error', 'User not found.');
         redirect('admin.php?action=users');
     }
 
-    adminView('user_view', compact('pageTitle', 'user'));
+    if ($user['role'] === 'student') {
+        $academicSummary = adminGetUserAcademicSummary($conn, $user_id);
+    }
+
+    adminView('user_view', compact('pageTitle', 'user', 'academicSummary'));
 }
 
 function adminUpdateUserStatus($conn)
@@ -490,6 +495,7 @@ function adminStudentReport($conn)
     $pageTitle = 'Student Academic Report';
     $keyword = isset($_GET['keyword']) ? trim($_GET['keyword']) : '';
     $student_id = isset($_GET['student_id']) ? (int)$_GET['student_id'] : 0;
+    $recentStudents = userGetRecentStudents($conn, 10);
     $students = array();
     $student = null;
     $enrollments = array();
@@ -513,7 +519,7 @@ function adminStudentReport($conn)
         }
     }
 
-    adminView('student_report', compact('pageTitle', 'keyword', 'students', 'student', 'enrollments', 'summary', 'attempts'));
+    adminView('student_report', compact('pageTitle', 'keyword', 'recentStudents', 'students', 'student', 'enrollments', 'summary', 'attempts'));
 }
 
 function adminInstitutionalReport($conn)

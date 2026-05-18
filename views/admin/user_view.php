@@ -22,6 +22,23 @@
     </table>
 </div>
 
+<?php if ($academicSummary): ?>
+    <div class="grid-cards">
+        <div class="card">
+            <div class="card-label">Total Enrolled Courses</div>
+            <div class="card-value"><?php echo e($academicSummary['enrolled_course_count']); ?></div>
+        </div>
+        <div class="card">
+            <div class="card-label">Total Quiz Attempts</div>
+            <div class="card-value"><?php echo e($academicSummary['attempt_count']); ?></div>
+        </div>
+        <div class="card">
+            <div class="card-label">Average Score</div>
+            <div class="card-value"><?php echo $academicSummary['average_score'] === null ? '0.00' : e(number_format((float)$academicSummary['average_score'], 2)); ?></div>
+        </div>
+    </div>
+<?php endif; ?>
+
 <div class="panel">
     <h2>Admin Actions</h2>
     <div class="actions">

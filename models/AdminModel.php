@@ -40,6 +40,15 @@ function adminGetStudentAttemptSummary($conn, $student_id)
     return dbSelectOne($conn, $sql, 'i', array((int)$student_id));
 }
 
+function adminGetUserAcademicSummary($conn, $student_id)
+{
+    $sql = "SELECT
+                (SELECT COUNT(*) FROM enrollments WHERE student_id = ?) AS enrolled_course_count,
+                (SELECT COUNT(*) FROM attempts WHERE student_id = ?) AS attempt_count,
+                (SELECT AVG(score) FROM attempts WHERE student_id = ?) AS average_score";
+    return dbSelectOne($conn, $sql, 'iii', array((int)$student_id, (int)$student_id, (int)$student_id));
+}
+
 function adminGetStudentAttempts($conn, $student_id)
 {
     $sql = "SELECT attempts.*, quizzes.title AS quiz_title, quizzes.pass_mark,

@@ -30,6 +30,36 @@ function getValue(id) {
     return field.value;
 }
 
+function clearRegisterFieldErrors() {
+    var form = document.getElementById("registerForm");
+    if (!form) {
+        return;
+    }
+
+    var messages = form.getElementsByClassName("field-error");
+    for (var i = 0; i < messages.length; i++) {
+        messages[i].innerHTML = "";
+    }
+
+    var fields = form.getElementsByTagName("input");
+    for (var j = 0; j < fields.length; j++) {
+        fields[j].className = fields[j].className.replace("input-error", "").trim();
+    }
+}
+
+function showFieldError(id, message) {
+    var field = document.getElementById(id);
+    var box = document.getElementById(id + "Error");
+
+    if (field && field.className.indexOf("input-error") === -1) {
+        field.className = (field.className + " input-error").trim();
+    }
+
+    if (box) {
+        box.innerHTML = message;
+    }
+}
+
 function escapeHtml(value) {
     var div = document.createElement("div");
     div.appendChild(document.createTextNode(value === null ? "" : String(value)));
@@ -73,6 +103,160 @@ function setupLoginValidation() {
 
         if (isEmpty(password)) {
             showError("Password is required.");
+            event.preventDefault();
+        }
+    });
+}
+
+function setupPasswordToggle() {
+    var buttons = document.getElementsByClassName("password-toggle");
+
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].addEventListener("click", function () {
+            var targetId = this.getAttribute("data-target");
+            var field = document.getElementById(targetId);
+
+            if (!field) {
+                return;
+            }
+
+            if (field.type === "password") {
+                field.type = "text";
+                this.className = "password-toggle active";
+                this.setAttribute("aria-label", "Hide password");
+                this.setAttribute("title", "Hide password");
+            } else {
+                field.type = "password";
+                this.className = "password-toggle";
+                this.setAttribute("aria-label", "Show password");
+                this.setAttribute("title", "Show password");
+            }
+        });
+    }
+}
+
+function setupRegisterRoleFields() {
+    var role = document.getElementById("role");
+    var studentFields = document.getElementsByClassName("student-only");
+    var instructorFields = document.getElementsByClassName("instructor-only");
+    var roleHelp = document.getElementById("roleHelp");
+
+    if (!role) {
+        return;
+    }
+
+    function showFields(fields, show) {
+        for (var i = 0; i < fields.length; i++) {
+            fields[i].style.display = show ? "block" : "none";
+        }
+    }
+
+    function updateFields() {
+        if (role.value === "instructor") {
+            showFields(studentFields, false);
+            showFields(instructorFields, true);
+            if (roleHelp) {
+                roleHelp.innerHTML = "Instructor requests stay pending until an admin approves the account.";
+            }
+        } else {
+            showFields(studentFields, true);
+            showFields(instructorFields, false);
+            if (roleHelp) {
+                roleHelp.innerHTML = "Student accounts can log in after successful registration.";
+            }
+        }
+    }
+
+    role.addEventListener("change", updateFields);
+    updateFields();
+}
+
+function setupRegisterValidation() {
+    var form = document.getElementById("registerForm");
+    if (!form) {
+        return;
+    }
+
+    form.addEventListener("submit", function (event) {
+        clearError();
+        clearRegisterFieldErrors();
+
+        var role = getValue("role");
+        var name = getValue("name");
+        var username = getValue("username");
+        var email = getValue("email");
+        var phone = getValue("phone");
+        var department = getValue("department");
+        var password = getValue("password");
+        var confirmPassword = getValue("confirm_password");
+        var hasError = false;
+
+        if (isEmpty(name)) {
+            showFieldError("name", "Full name is required.");
+            hasError = true;
+        }
+
+        if (isEmpty(username)) {
+            showFieldError("username", "Username is required.");
+            hasError = true;
+        }
+
+        if (isEmpty(email)) {
+            showFieldError("email", "Email is required.");
+            hasError = true;
+        } else if (!isValidEmail(email)) {
+            showFieldError("email", "Please enter a valid email address.");
+            hasError = true;
+        }
+
+        if (isEmpty(phone)) {
+            showFieldError("phone", "Phone is required.");
+            hasError = true;
+        }
+
+        if (!(role === "student" || role === "instructor")) {
+            showError("Please select a valid account type.");
+            event.preventDefault();
+            return;
+        }
+
+        if (role === "student") {
+            if (isEmpty(getValue("student_id"))) {
+                showFieldError("student_id", "Student ID is required.");
+                hasError = true;
+            }
+
+            if (isEmpty(getValue("program"))) {
+                showFieldError("program", "Program is required.");
+                hasError = true;
+            }
+        }
+
+        if (isEmpty(department)) {
+            showFieldError("department", "Department is required.");
+            hasError = true;
+        }
+
+        if (isEmpty(password)) {
+            showFieldError("password", "Password is required.");
+            hasError = true;
+        } else if (password.length < 4) {
+            showFieldError("password", "Password must be at least 4 characters.");
+            hasError = true;
+        }
+
+        if (isEmpty(confirmPassword)) {
+            showFieldError("confirm_password", "Confirm password is required.");
+            hasError = true;
+        }
+
+        if (!isEmpty(password) && !isEmpty(confirmPassword) && password !== confirmPassword) {
+            showFieldError("password", "");
+            showFieldError("confirm_password", "Passwords do not match.");
+            hasError = true;
+        }
+
+        if (hasError) {
             event.preventDefault();
         }
     });
@@ -271,6 +455,9 @@ function setupLiveUserSearch() {
 document.addEventListener("DOMContentLoaded", function () {
     setupConfirmForms();
     setupLoginValidation();
+    setupPasswordToggle();
+    setupRegisterRoleFields();
+    setupRegisterValidation();
     setupCreateTaValidation();
     setupSubjectValidation();
     setupAnnouncementValidation();

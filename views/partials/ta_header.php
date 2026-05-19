@@ -1,5 +1,8 @@
 <?php
+require_once __DIR__ . '/../../models/PlatformAnnouncementModel.php';
+global $conn;
 $flash = taGetFlash();
+$taPlatformAnnouncements = isset($conn) ? platformAnnouncementGetVisibleForRole($conn, 'ta', 5) : array();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +19,21 @@ $flash = taGetFlash();
             <span>Teaching Assistant Panel</span>
         </div>
         <div class="ta-top-user">
+            <div class="announcement-menu">
+                <button class="announcement-toggle" type="button" aria-label="Platform announcements" title="Platform announcements">&#128276;</button>
+                <div class="announcement-dropdown">
+                    <strong>Platform Announcements</strong>
+                    <?php if (empty($taPlatformAnnouncements)): ?>
+                        <p class="announcement-empty">No platform announcements.</p>
+                    <?php endif; ?>
+                    <?php foreach ($taPlatformAnnouncements as $announcement): ?>
+                        <div class="announcement-item">
+                            <b><?php echo taE($announcement['title']); ?></b>
+                            <p><?php echo taE($announcement['body']); ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
             <a class="ta-user-link" href="ta.php?action=profile"><?php echo taE($_SESSION['name']); ?></a>
             <a href="logout.php">Logout</a>
         </div>

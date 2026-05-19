@@ -2,7 +2,7 @@
 
 <div class="panel">
     <h2>Search Student</h2>
-    <form method="get" action="admin.php" class="form-grid">
+    <form id="studentReportSearchForm" method="get" action="admin.php" class="form-grid">
         <input type="hidden" name="action" value="student_report">
         <div class="form-row">
             <label for="keyword">Student Name, ID, or Email</label>
@@ -16,7 +16,7 @@
 </div>
 
 <?php if ($keyword === '' && !$student): ?>
-    <div class="panel">
+    <div id="recentStudentsPanel" class="panel">
         <h2>Recent Students</h2>
         <div class="table-wrap">
             <table>
@@ -52,41 +52,37 @@
     </div>
 <?php endif; ?>
 
-<?php if (!empty($students)): ?>
-    <div class="panel">
-        <h2>Search Results</h2>
-        <table>
-            <thead>
+<?php $showSearchResults = $keyword !== '' || !empty($students); ?>
+<div id="studentSearchResultsPanel" class="panel" style="<?php echo $showSearchResults ? '' : 'display: none;'; ?>">
+    <h2>Search Results</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Student ID</th>
+                <th>Program</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="studentSearchResultsBody">
+            <?php if (empty($students)): ?>
+                <tr><td colspan="5">No students matched your search.</td></tr>
+            <?php endif; ?>
+            <?php foreach ($students as $item): ?>
                 <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Student ID</th>
-                    <th>Program</th>
-                    <th>Action</th>
+                    <td><?php echo e($item['name']); ?></td>
+                    <td><?php echo e($item['email']); ?></td>
+                    <td><?php echo e($item['student_id']); ?></td>
+                    <td><?php echo e($item['program']); ?></td>
+                    <td>
+                        <a class="btn small" href="admin.php?action=student_report&keyword=<?php echo e(urlencode($keyword)); ?>&student_id=<?php echo e($item['id']); ?>">View Report</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($students as $item): ?>
-                    <tr>
-                        <td><?php echo e($item['name']); ?></td>
-                        <td><?php echo e($item['email']); ?></td>
-                        <td><?php echo e($item['student_id']); ?></td>
-                        <td><?php echo e($item['program']); ?></td>
-                        <td>
-                            <a class="btn small" href="admin.php?action=student_report&keyword=<?php echo e(urlencode($keyword)); ?>&student_id=<?php echo e($item['id']); ?>">View Report</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
-<?php endif; ?>
-
-<?php if ($keyword !== '' && empty($students) && !$student): ?>
-    <div class="panel">
-        <p class="muted">No students matched your search.</p>
-    </div>
-<?php endif; ?>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
 <?php if ($student): ?>
     <div class="grid-cards">

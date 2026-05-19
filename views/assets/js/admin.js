@@ -452,6 +452,106 @@ function setupLiveUserSearch() {
     }
 }
 
+function setupStudentReportSearch() {
+    var form = document.getElementById("studentReportSearchForm");
+    var searchBox = document.getElementById("keyword");
+    var resultsPanel = document.getElementById("studentSearchResultsPanel");
+    var resultsBody = document.getElementById("studentSearchResultsBody");
+    var recentPanel = document.getElementById("recentStudentsPanel");
+
+    if (!form || !searchBox || !resultsPanel || !resultsBody) {
+        return;
+    }
+
+    var lastKeyword = "";
+
+    function renderRows(students, keyword) {
+        var html = "";
+
+        if (students.length === 0) {
+            resultsBody.innerHTML = '<tr><td colspan="5">No students matched your search.</td></tr>';
+            return;
+        }
+
+        for (var i = 0; i < students.length; i++) {
+            var student = students[i];
+            var url = "admin.php?action=student_report&keyword=" + encodeURIComponent(keyword) +
+                "&student_id=" + encodeURIComponent(student.id);
+
+            html += "<tr>";
+            html += "<td>" + escapeHtml(student.name) + "</td>";
+            html += "<td>" + escapeHtml(student.email) + "</td>";
+            html += "<td>" + escapeHtml(student.student_id) + "</td>";
+            html += "<td>" + escapeHtml(student.program) + "</td>";
+            html += "<td><a class=\"btn small\" href=\"" + url + "\">View Report</a></td>";
+            html += "</tr>";
+        }
+
+        resultsBody.innerHTML = html;
+    }
+
+    function runSearch() {
+        var keyword = searchBox.value.trim();
+        lastKeyword = keyword;
+
+        if (keyword === "") {
+            resultsPanel.style.display = "none";
+            resultsBody.innerHTML = "";
+            if (recentPanel) {
+                recentPanel.style.display = "";
+            }
+            return;
+        }
+
+        if (recentPanel) {
+            recentPanel.style.display = "none";
+        }
+        resultsPanel.style.display = "block";
+        resultsBody.innerHTML = '<tr><td colspan="5">Searching...</td></tr>';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "api/admin_student_report_search.php?keyword=" + encodeURIComponent(keyword), true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) {
+                return;
+            }
+
+            if (keyword !== lastKeyword) {
+                return;
+            }
+
+            if (xhr.status !== 200) {
+                resultsBody.innerHTML = '<tr><td colspan="5">Student search failed.</td></tr>';
+                return;
+            }
+
+            var response;
+            try {
+                response = JSON.parse(xhr.responseText);
+            } catch (error) {
+                resultsBody.innerHTML = '<tr><td colspan="5">Invalid student search response.</td></tr>';
+                return;
+            }
+
+            if (!response.success) {
+                resultsBody.innerHTML = '<tr><td colspan="5">' + escapeHtml(response.message || "Student search failed.") + '</td></tr>';
+                return;
+            }
+
+            renderRows(response.students, keyword);
+        };
+        xhr.send();
+    }
+
+    searchBox.addEventListener("input", runSearch);
+    searchBox.addEventListener("keyup", runSearch);
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        runSearch();
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     setupConfirmForms();
     setupLoginValidation();
@@ -464,4 +564,5 @@ document.addEventListener("DOMContentLoaded", function () {
     setupSettingsValidation();
     setupIntegrityValidation();
     setupLiveUserSearch();
+    setupStudentReportSearch();
 });

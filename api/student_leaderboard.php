@@ -6,7 +6,7 @@ require_once __DIR__ . '/../models/StudentQuizModel.php';
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['student_user_id']) || !isset($_SESSION['student_role']) || $_SESSION['student_role'] !== 'student') {
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
     echo json_encode([
         'success' => false,
         'message' => 'Student login is required.',

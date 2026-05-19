@@ -46,12 +46,11 @@
                     <th>Entity Type</th>
                     <th>Entity ID</th>
                     <th>Details</th>
-                    <th>IP Address</th>
                 </tr>
             </thead>
             <tbody>
                 <?php if (empty($logs)): ?>
-                    <tr><td colspan="7">No audit logs found.</td></tr>
+                    <tr><td colspan="6">No audit logs found.</td></tr>
                 <?php endif; ?>
                 <?php foreach ($logs as $log): ?>
                     <tr>
@@ -61,7 +60,6 @@
                         <td><?php echo e($log['entity_type']); ?></td>
                         <td><?php echo e($log['entity_id']); ?></td>
                         <td><?php echo e($log['details']); ?></td>
-                        <td><?php echo e($log['ip_address']); ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

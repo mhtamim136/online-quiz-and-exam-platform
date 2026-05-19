@@ -1,4 +1,14 @@
 <?php require __DIR__ . '/../partials/admin_header.php'; ?>
+<?php
+$hiddenSettingKeys = array('seed_default_doubt_session_capacity', 'seed_at_risk_score_threshold');
+$visibleSettings = array();
+
+foreach ($settings as $setting) {
+    if (!in_array($setting['setting_key'], $hiddenSettingKeys, true)) {
+        $visibleSettings[] = $setting;
+    }
+}
+?>
 
 <div id="formError" class="form-error"></div>
 <?php if (!empty($errors)): ?>
@@ -23,12 +33,12 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (empty($settings)): ?>
+                <?php if (empty($visibleSettings)): ?>
                     <tr><td colspan="5">No settings found.</td></tr>
                 <?php endif; ?>
-                <?php foreach ($settings as $setting): ?>
+                <?php foreach ($visibleSettings as $setting): ?>
                     <tr>
-                        <td><?php echo e($setting['setting_key']); ?></td>
+                        <td><?php echo e(str_replace('seed_', '', $setting['setting_key'])); ?></td>
                         <td>
                             <form class="setting-form" method="post" action="admin.php?action=settings">
                                 <input type="hidden" name="setting_id" value="<?php echo e($setting['id']); ?>">

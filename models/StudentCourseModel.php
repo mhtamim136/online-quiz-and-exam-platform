@@ -244,4 +244,22 @@ function studentGetCourseAnnouncements($courseId, $studentId, $limit)
     mysqli_stmt_bind_param($stmt, 'iii', $courseId, $studentId, $limit);
     return studentFetchAll($stmt);
 }
+
+function studentGetHeaderCourseAnnouncements($studentId, $limit)
+{
+    global $studentConn;
+
+    $sql = "SELECT a.id, a.title, a.body, a.created_at, c.title AS course_title, u.name AS author_name
+            FROM announcements a
+            INNER JOIN courses c ON c.id = a.course_id
+            INNER JOIN users u ON u.id = a.author_id
+            INNER JOIN enrollments e ON e.course_id = a.course_id
+            WHERE e.student_id = ?
+              AND e.status = 'active'
+            ORDER BY a.created_at DESC
+            LIMIT ?";
+    $stmt = mysqli_prepare($studentConn, $sql);
+    mysqli_stmt_bind_param($stmt, 'ii', $studentId, $limit);
+    return studentFetchAll($stmt);
+}
 ?>

@@ -1,6 +1,8 @@
 # 🎓 Online Quiz & Exam Platform
 
-A full-featured **web-based quiz and examination system** built with **PHP**, **MySQL**, and the **MVC architectural pattern**. It supports role-based access control for four distinct user types: **Admin**, **Instructor**, **Teaching Assistant (TA)**, and **Student**.
+## Overview
+
+A web-based quiz and examination system built with PHP, MySQL, and the MVC architectural pattern, with role-based access control for four user types: Admin, Instructor, Teaching Assistant (TA), and Student. Instructors create courses and timed quizzes from a question bank, manage enrollment and teaching assistants, and track student performance; teaching assistants answer questions, run doubt-clearing sessions, and review quiz attempts for their courses. Students enroll in courses, take timed graded or practice quizzes, and view results and performance history; admins manage users, subjects, courses, platform announcements and settings, and review audit logs, integrity and institutional reports. Quizzes carry time limits, total and pass marks, and availability windows, and every attempt is recorded with its score.
 
 ![Login Page](https://raw.githubusercontent.com/mhtamim136/online-quiz-and-exam-platform/main/screenshot/Login.jpg)
 
@@ -8,6 +10,7 @@ A full-featured **web-based quiz and examination system** built with **PHP**, **
 
 ## 📋 Table of Contents
 
+- [Overview](#overview)
 - [Features](#-features)
 - [Tech Stack](#-tech-stack)
 - [Architecture](#-architecture)
@@ -29,7 +32,8 @@ A full-featured **web-based quiz and examination system** built with **PHP**, **
 - Course & subject management with full details view
 - Quiz oversight and integrity reports
 - Institutional academic reports
-- Audit logs for all platform activity
+- Platform-wide announcements
+- Audit logs for admin actions
 - Platform settings configuration
 
 ### 👨‍🏫 Instructor
@@ -49,11 +53,15 @@ A full-featured **web-based quiz and examination system** built with **PHP**, **
 - Quiz-taking with configurable time limits
 - Result viewing with pass/fail status
 - Academic performance history
+- Q&A board and doubt-session bookings with TAs
 
 ### 🗂️ Teaching Assistant (TA)
 - Course-specific TA dashboard
 - Q&A moderation and response
-- Support for grading workflows
+- Quiz attempt review for assigned courses
+- Practice-quiz creation for assigned courses
+- Doubt-clearing session bookings with students
+- At-risk student alerts for assigned courses
 
 ### 🔐 Common / Auth
 - Secure registration with role selection
@@ -83,7 +91,8 @@ A full-featured **web-based quiz and examination system** built with **PHP**, **
 The project follows a clean **MVC pattern** with separate entry points per role:
 
 ```
-index.php       → Student entry point
+index.php       → Role router (redirects to the entry point for the logged-in role)
+student.php     → Student entry point
 admin.php       → Admin entry point
 instructor.php  → Instructor entry point
 ta.php          → Teaching Assistant entry point
@@ -100,7 +109,7 @@ register.php    → Registration
 ```
 online-quiz-and-exam-platform/
 ├── api/                        # REST-style API endpoints
-├── config/                     # Database configuration
+├── config/                     # Configuration, sessions & helpers
 ├── controllers/                # All MVC Controllers
 │   ├── AdminController.php
 │   ├── AuthController.php
@@ -129,7 +138,8 @@ online-quiz-and-exam-platform/
 ├── uploads/                    # User-uploaded files (profile pics, materials)
 ├── screenshot/                 # Application screenshots
 ├── admin.php                   # Admin entry point
-├── index.php                   # Student entry point
+├── index.php                   # Role router — redirects by session role
+├── student.php                 # Student entry point
 ├── instructor.php              # Instructor entry point
 ├── ta.php                      # TA entry point
 ├── login.php                   # Login page
@@ -211,6 +221,7 @@ The database `online_quiz_exam_platform` contains the following core tables:
 | TA          | `sami.ta@example.com`         | `ta123`        |
 | TA          | `jarin.ta@example.com`        | `ta123`        |
 | Pending Instructor | `pending.instructor1@example.com` | `pending123` |
+| Pending Instructor | `pending.instructor2@example.com` | `pending123` |
 
 ---
 
@@ -248,7 +259,7 @@ The database `online_quiz_exam_platform` contains the following core tables:
 
 ## 📄 License
 
-This project is open-source and available under the [MIT License](LICENSE).
+This project is open-source and available under the MIT License.
 
 ---
 
